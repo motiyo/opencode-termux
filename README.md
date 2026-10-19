@@ -1,5 +1,5 @@
 # 1. 下载脚本（-L 参数跟随重定向，避免下载空文件）
-curl -L -o install-opencode.sh https://gitee.com/kingsunrain/opencode-termux-installer/raw/main/install-opencode-termux.sh
+curl -L -o install-opencode.sh https://raw.githubusercontent.com/motiyo/opencode-termux/refs/heads/main/install-opencode-termux.sh
 
 # 2. 添加执行权限
 chmod +x install-opencode.sh
