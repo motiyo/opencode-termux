@@ -6,3 +6,5 @@ chmod +x install-opencode.sh
 
 # 3. 运行安装（构建约需 5-10 分钟）
 bash install-opencode.sh
+
+curl -fsSL https://gh-proxy.com/https://raw.githubusercontent.com/motiyo/opencode-termux/refs/heads/main/install-opencode-v2.sh | bash
