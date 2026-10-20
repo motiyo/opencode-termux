@@ -115,7 +115,7 @@ install_deps() (
   pkg install -y "${APT_OPTS[@]}" glibc openssl-glibc </dev/null
 )
 
-info "安装依赖（nodejs、patchelf、binutils、glibc 等）..."
+info "安装依赖（nodejs、patchelf、binutils、llvm、glibc 等）..."
 if ! install_deps; then
   warn "依赖安装失败，重试一次..."
   install_deps || die "依赖安装失败，请检查上方日志后重试"
@@ -124,6 +124,29 @@ fi
 command -v node >/dev/null 2>&1 || die "nodejs 安装失败"
 command -v npm >/dev/null 2>&1 || die "npm 安装失败"
 command -v patchelf >/dev/null 2>&1 || die "patchelf 安装失败"
+
+# wrapper 的 verifyInterpreter 依赖 readelf；Termux 的 binutils 只提供 greadelf，
+# readelf 由 llvm 包提供。缺失时自动安装 llvm，仍失败则回退 greadelf 软链接。
+ensure_readelf() {
+  command -v readelf >/dev/null 2>&1 && return 0
+
+  info "未找到 readelf，自动安装 llvm..."
+  pkg install -y "${APT_OPTS[@]}" llvm </dev/null || warn "llvm 安装失败，尝试 greadelf 兜底"
+  command -v readelf >/dev/null 2>&1 && return 0
+
+  if ! command -v greadelf >/dev/null 2>&1; then
+    warn "未找到 greadelf，尝试安装 binutils..."
+    pkg install -y "${APT_OPTS[@]}" binutils </dev/null || true
+  fi
+  if command -v greadelf >/dev/null 2>&1; then
+    ln -sf "$(command -v greadelf)" "$PREFIX/bin/readelf"
+    info "已自动创建 readelf -> greadelf 软链接"
+    return 0
+  fi
+  return 1
+}
+
+ensure_readelf || die "readelf 自动安装失败（llvm 与 greadelf 均不可用），请检查网络/源后重试"
 ok "依赖安装完成（node $(node -v)）"
 
 # ---------------------------------------------------------------- 解析版本
