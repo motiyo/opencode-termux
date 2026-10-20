@@ -262,7 +262,7 @@ replaceOnce(
 // 2) 不再向进程注入 LD_LIBRARY_PATH，改用 loader --library-path
 replaceOnce(
   "  const env = withAutoUpdateEnv({ ...(deps.env || process.env), LD_PRELOAD: '', LD_LIBRARY_PATH: deps.glibcLibDir || GLIBC_LIB_DIR });\n  try { execFn(binPath, args, { stdio: 'inherit', env }); }",
-  "  const env = withAutoUpdateEnv({ ...(deps.env || process.env) });\n  try { execFn(GLIBC_LD_PATH, ['--library-path', deps.glibcLibDir || GLIBC_LIB_DIR, binPath, ...args], { stdio: 'inherit', env }); }",
+  "  const env = withAutoUpdateEnv({ ...(deps.env || process.env), LD_PRELOAD: '' });\n  try { execFn(GLIBC_LD_PATH, ['--library-path', deps.glibcLibDir || GLIBC_LIB_DIR, binPath, ...args], { stdio: 'inherit', env }); }",
   "execFn(GLIBC_LD_PATH,",
   'loader 启动'
 );
