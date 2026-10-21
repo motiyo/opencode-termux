@@ -14,6 +14,6 @@ bash install-opencode.sh
 ### 启动
 
 ```bash
-opencode         # 启动 OpenCode
 oc -v            # 查看版本
+oc               # 启动 OpenCode
 ```
